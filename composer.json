@@ -1,0 +1,15 @@
+{
+    "name": "telecan/codebasehq_telegram_bot",
+    "type": "project",
+    "require": {
+        "php": ">=5.5.0",
+        "longman/telegram-bot": "*",
+        "rmccue/requests": ">=1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "CodebasehqTelegramBot\\": "src/",
+            "Rmccue\\Requests\\": "vendor/rmccue/requests/library/"
+        }
+    }
+}
