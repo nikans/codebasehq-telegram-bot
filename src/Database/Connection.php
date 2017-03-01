@@ -12,7 +12,7 @@ class Connection extends mysqli
     protected static $instance;
     protected static $options = array();
 
-    private function __construct() {
+    public function __construct() {
         $o = self::$options;
 
         // turn off error reporting

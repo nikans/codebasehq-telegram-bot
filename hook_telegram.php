@@ -11,4 +11,4 @@ $chat_handler->handleInput();
 $commandHandler = new TelegramCommandHandler();
 $commandHandler->handleInput();
 
-$chat_handler->logInput();
+// $chat_handler->logInput();

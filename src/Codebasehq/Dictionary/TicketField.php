@@ -13,7 +13,7 @@ class TicketField {
 		'assignee_id' => "Assignee",
 		'estimated_time_string' => "Estimated Time",
 		'subject' => "Subject",
-		'type_id' => "Type",
+		'ticket_type_id' => "Type",
 		'sprint_ids' => "Sprints",
 		'priority_id' => "Priority",
 		'category_id' => "Category",

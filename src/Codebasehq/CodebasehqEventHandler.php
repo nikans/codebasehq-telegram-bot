@@ -16,15 +16,17 @@ class CodebasehqEventHandler {
 	public $event;
 	
 	function __construct($event_raw) {
-		$event_json = json_decode($event_raw);
-		$event_json->payload = json_decode(utf8_encode($event_json->payload));
-		
-		$this->event = CodebasehqEventFactory::getEvent($event_json);
+		$this->event = CodebasehqEventFactory::getEvent($event_raw);
 	}
 	
 	public function logEvent() {
 		$filename = "test/codebasehq-".time().".json";
 		file_put_contents($filename, $this->event->prettyJson());
+	}
+	
+	public function logRaw() {
+		$filename = "test/codebasehq-raw-".time().".json";
+		file_put_contents($filename, $this->event->raw);
 	}
 	
 }

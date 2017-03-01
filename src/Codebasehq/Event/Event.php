@@ -5,12 +5,14 @@ namespace CodebasehqTelegramBot\Codebasehq\Event;
 abstract class Event {
 	
 	public $json;
+	public $raw;
 	public $project_name = null;
 	public $codebasehq_actor_username = null;
 	public $codebasehq_subject_username = null;
 	
-	function __construct($event_json) {
+	function __construct($event_json, $event_raw = null) {
 		$this->json = $event_json;
+		$this->raw = $event_raw;
 	}
 	
 	public function payload() {

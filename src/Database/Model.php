@@ -238,8 +238,8 @@ abstract class Model {
 	
 	public static function deleteMultiple($properties = null) {
 				
-		if(is_a($params[0], get_called_class())) {
-			$models = $params;
+		if(is_a($properties[0], get_called_class())) {
+			$models = $properties;
 			
 			static::$connection->query("BEGIN") 
 				or die(static::getTableName().": ".mysqli_error(static::$connection));
@@ -255,7 +255,7 @@ abstract class Model {
 		}
 		
 		$queryString = "DELETE FROM ".static::getTableName();
-		if(is_array($params) && count($params) > 0) {
+		if(is_array($properties) && count($properties) > 0) {
 			$queryString .= " WHERE ".
 				join(' and ', 
 	    			array_map(function ($key, $val) {

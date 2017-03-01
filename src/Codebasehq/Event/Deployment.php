@@ -7,7 +7,7 @@ class Deployment extends Event {
 	function __construct($event_json) {
 		parent::__construct($event_json);
 		
-		$this->project_name = $this->payload()->project->name;
+		$this->project_name = $this->payload()->repository->project->name;
 	}
 	
 	public function formatted() {
@@ -15,12 +15,12 @@ class Deployment extends Event {
 			"<b>".$this->project_name.":</b> ".
 			"deployment from repo <i>".$this->payload()->repository->name."</i> ".
 			"branch <i>".$this->payload()->branch."</i> ".
-			"<b>".$this->payload()->status".</b>";
+			"<b>".$this->payload()->status."</b>";
 		
 		$str .= '
 ';
 		
-		$project_name = $this->projectNameFromUrl($this->payload()->project->url);
+		$project_name = $this->projectNameFromUrl($this->payload()->repository->project->url);
 		$repo_name = str_replace("-", "_", $this->payload()->repository->name);
 		$branch_name = str_replace("-", "_", $this->payload()->branch);
 		

@@ -19,7 +19,7 @@ class Push extends Event {
 		$str = 
 			"<b>".$this->project_name.":</b> ".
 			$this->payload()->user->name." ".
-			($commits_count > 0 ? "pushed ".count($this->payload()->commits)." commit".($commits_count > 1 ? "s" : "")." to " : "merged something in ").
+			($commits_count > 0 ? "pushed ".$commits_count." commit".($commits_count > 1 ? "s" : "")." to " : "merged something in ").
 			"<a href='".$this->payload()->repository->url."'>".$this->payload()->repository->name."</a> (".$this->payload()->ref.").";
 		
 		$str .= '

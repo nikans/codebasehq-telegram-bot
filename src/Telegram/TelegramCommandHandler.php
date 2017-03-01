@@ -62,11 +62,11 @@ class TelegramCommandHandler {
 			case 'register':
 				$this->registerCodebaseUserMessage($parameter);
 				break;
-			case 'tickets':
+			case 'tickets': case 't':
 				$this->getCodebaseTicketsMessage($parameter);
 				break;
-			case 'my_tickets':
-				$this->getMyCodebaseTicketsMessage();
+			case 'my_tickets': case 'mt':
+				$this->getMyCodebaseTicketsMessage($parameter);
 				break;
 		}
 	}
@@ -116,16 +116,21 @@ class TelegramCommandHandler {
 '.
 		'<b>Search tickets:</b>
 '.
-		'/tickets<pre> project_name search_options</pre>
+		'/tickets project_name [search_options]
 '.
-		'- project_name: fuzzy search for match in project name or permalink
+		'- <pre>project_name</pre>: fuzzy search for match in project name or permalink
 '.
-		'- search_options: <a href="https://support.codebasehq.com/articles/tickets/quick-search">quick search options</a> from CodebaseHQ
+		'- <pre>search_options</pre>: <a href="https://support.codebasehq.com/articles/tickets/quick-search">quick search options</a> from CodebaseHQ (optional, though, recommended)
 
 '.
 		'<b>Your assigned unresolved tickets:</b>
 '.
-		'/my_tickets';
+		'/my_tickets [project_name search_options]
+'.
+		'- <pre>project_name</pre> and <pre>search_options</pre> are optional
+
+'.
+		'You may use shortcuts: <pre>\t</pre> and <pre>\mt</pre> respectively.';
 		
 		$this->sendMessage($help_message);
 	}
@@ -155,10 +160,23 @@ class TelegramCommandHandler {
 		return $telegram_user;
 	}
 	
-	private function getCodebaseTicketsMessage($parameter) {
-		$parameters = split(" ", $parameter);
-		$project_search_string = array_shift($parameters);
-		$search_options = $parameters;
+	private function getCodebaseTicketsMessage($parameters) {
+		
+		if(strlen($parameters) == 0) {
+			$this->sendMessage("Invalid parameters");
+			return;
+		}
+		
+		$search_options = null;
+		
+		if(strpos($parameters, " ")) {
+			$parameters = explode(" ", $parameters);
+			$project_search_string = array_shift($parameters);
+			$search_options = $parameters;
+		}
+		else {
+			$project_search_string = $parameters;
+		}
 		
 		$telegram_chat = TelegramChat::fetch(['id' => $this->chat_id]);
 		$telegram_user = $telegram_chat->getTelegramUser();
@@ -179,25 +197,46 @@ class TelegramCommandHandler {
 			},
 			$tickets
 		);
-						
+							
+		if(count($tickets) == 0) {
+			$this->sendMessage("No tickets found");
+			return;
+		}
+					
 		foreach($tickets as $ticket)
 			$this->sendMessage($ticket);
 	}
 	
-	private function getMyCodebaseTicketsMessage() {
+	private function getMyCodebaseTicketsMessage($parameters) {
+		$project_search_string = null;
+		$search_options = null;
 		
+		if(strpos($parameters, " ")) {
+			$parameters = split(" ", $parameters);
+			$project_search_string = array_shift($parameters);
+			$search_options = $parameters;
+		}
+		else {
+			$project_search_string = $parameters;
+		}
+				
 		$telegram_chat = TelegramChat::fetch(['id' => $this->chat_id]);
 		$telegram_user = $telegram_chat->getTelegramUser();
 		$codebasehq_user = $telegram_user->getCodebasehqUser();
 		
 		$tr = new CodebasehqTicketRequest($codebasehq_user);
-		$tickets = $tr->requestAllMyTickets();
+		$tickets = $tr->requestMyTickets($project_search_string, $search_options);
 		$tickets = array_map(
 			function($ticket) {
 				return $this->formatTicket($ticket, true);
 			},
 			$tickets
 		);
+		
+		if(count($tickets) == 0) {
+			$this->sendMessage("No tickets found");
+			return;
+		}
 		
 		foreach($tickets as $ticket)
 			$this->sendMessage($ticket);
@@ -208,7 +247,7 @@ class TelegramCommandHandler {
 		$str = $t->formatted($my);
 		return $str;
 	}
-
+	
 		
 	public function sendMessage($message, $keyboard = null) {
 		$parameters = ['chat_id' => $this->chat_id, 'text' => $message, 'parse_mode' => 'HTML'];

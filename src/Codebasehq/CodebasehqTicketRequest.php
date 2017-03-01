@@ -3,6 +3,7 @@
 namespace CodebasehqTelegramBot\Codebasehq;
 
 use \CodebasehqTelegramBot\Codebasehq\Model\CodebasehqUser;
+use \CodebasehqTelegramBot\Codebasehq\Model\CodebasehqProject;
 use \CodebasehqTelegramBot\Telegram\Model\TelegramUser;
 use \CodebasehqTelegramBot\Telegram\Model\TelegramChat;
 	
@@ -27,6 +28,13 @@ class CodebasehqTicketRequest {
 		
 		$data = [];
 		if(isset($parameters) && is_array($parameters)) {
+			if(count(array_filter($parameters, function($p) {
+				return strpos($p, 'resolution:') === 0 || strpos($p, 'not-resolution:') === 0;
+				})) == 0) 
+			{
+				$parameters[] = 'resolution:open';
+			}
+			
 			$parameters_string = join(' ', $parameters);
 			$data = array('query' => $parameters_string);
 		}
@@ -35,12 +43,19 @@ class CodebasehqTicketRequest {
 		$request = \Requests::request('https://api3.codebasehq.com/'.$project_permalink.'/tickets', $headers, $data, \Requests::GET);
 	
 		$tickets = json_decode($request->body);
-		return 	
-			array_map(function($ticket) { 
+		 	
+		$tickets = array_map(function($ticket) { 
 					return $ticket->ticket; 
 				},
 				$tickets
 			);
+		usort($tickets, function($a, $b) {
+			if ($a->priority->position == $b->priority->position)
+		        return ($a->status->order <= $b->status->order) ? -1 : 1;
+		    return ($a->priority->position > $b->priority->position) ? -1 : 1;
+		});
+		
+		return $tickets;
 	}
 	
 	private function constructHeaders() {
@@ -54,25 +69,48 @@ class CodebasehqTicketRequest {
 		return $headers;
 	}
 	
-	
-	public function requestAllMyTickets() {
-		$assignments = $this->codebasehq_user->getAssignments();
+	public function requestTicketsSearch($project_search_string = null, $search_options = null, $filter_projects = null) {
 		
-		$tickets = [];
-		foreach($assignments as $assignment) {
-			$project = $assignment->getCodebasehqProject();
-			$tickets = 
-				array_merge($tickets, 
-					$this->requestTickets($project->permalink, ['assignee:me', 'resolution:open', 'sort:priority', 'sort:desc'])
-				);
+		if(isset($project_search_string) && strlen($project_search_string) > 0)
+			$projects = CodebasehqProject::fetchFuzzyMultiple($project_search_string);
+		else 
+			$projects = CodebasehqProject::fetchMultiple();
+			
+		var_dump($project_search_string, $search_options, $projects, $filter_projects);
+					
+		if(isset($filter_projects) && is_array($filter_projects)) {
+			$projects = array_filter($projects, function($project) use ($filter_projects) {
+				return in_array($project->permalink, $filter_projects);
+			});
 		}
 		
-		usort($tickets, function($a, $b) {
-			if ($a->priority->position == $b->priority->position)
-		        return 0;
-		    return ($a->priority->position < $b->priority->position) ? -1 : 1;
-		});
+		var_dump($projects);
 		
+		$tickets = [];
+		
+		$tr = new CodebasehqTicketRequest($this->codebasehq_user);
+		
+		foreach($projects as $project) {
+			$t = $tr->requestTickets($project->permalink, $search_options);
+			$tickets = array_merge($tickets, $t);
+		}
+		return $tickets;
+	}
+	
+	
+	public function requestMyTickets($project_search_string = null, $search_options = null) {
+		$assignments = $this->codebasehq_user->getAssignments();
+		
+		$projects = array_map(function($assignment) {
+			return $assignment->getCodebasehqProject()->permalink;
+		}, $assignments);
+		
+		$options = ['assignee:me', 'sort:priority', 'sort:desc'];
+		if(isset($search_options) && is_array($search_options)) {
+			array_merge($options, $search_options);
+		}
+		$tickets = $this->requestTicketsSearch($project_search_string, $options, $projects);
+					
 		return $tickets;
 	} 
 	

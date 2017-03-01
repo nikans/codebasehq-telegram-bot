@@ -21,13 +21,19 @@ class Ticket {
 		$this->url = "https://".CODEBASE_ACCOUNT_NAME.".codebasehq.com/projects/".$this->project->permalink."/tickets/".$this->ticket->ticket_id;
 	}
 	
-	public function formatted($me = false) {
+	public function formatted($my = false) {
 		$str = 
 			"<b>".$this->project->name.":</b> ".
 			"<a href='".$this->url."'>Ticket #".$this->ticket->ticket_id." (".$this->ticket->summary.")</a> "."
 ";		
 		if(isset($this->ticket->priority)) {
 			$str .= "<i>Priority:</i> ".$this->ticket->priority->name;
+			$str .= "
+";
+		}
+		
+		if(isset($this->ticket->status)) {
+			$str .= "<i>Status:</i> ".$this->ticket->status->name;
 			$str .= "
 ";
 		}

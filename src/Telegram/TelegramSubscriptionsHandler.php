@@ -67,9 +67,10 @@ class TelegramSubscriptionsHandler {
 			$telegram_chat = TelegramChat::fetch(['id' => $chat_id]);
 			$telegram_user = $telegram_chat->getTelegramUser();
 			$codebasehq_user = $telegram_user->getCodebasehqUser();
-						
-			if(in_array($codebasehq_user->username, $ignore_codebasehq_users))
-				continue;
+			
+			// ignore actions by self		
+// 			if(in_array($codebasehq_user->username, $ignore_codebasehq_users))
+// 				continue;
 			
 			$chat = new \CodebasehqTelegramBot\Telegram\TelegramChatHandler($chat_id);
 
@@ -80,19 +81,19 @@ class TelegramSubscriptionsHandler {
 		}
 	}
 	
-	public static function registerUserIfNeeded($chat_id, $username, $first_name = null, $last_name = null) {
+	public static function registerUserIfNeeded($chat_id, $user_id, $username = null, $first_name = null, $last_name = null) {
 				
 		$connection = Connection::getInstance();
 		
 		$user = null;
 		
 		if(isset($username) && strlen($username) > 0) {
-			$user = TelegramUser::fetch(['username' => $username]);
+			$user = TelegramUser::fetch(['id' => $user_id]);
 			
 			if($user) {
 				$user->first_name = $first_name;
 				$user->last_name = $last_name;
-				
+				$user->username = $username;
 				$user->persist();
 			}
 		}
@@ -106,7 +107,7 @@ class TelegramSubscriptionsHandler {
 						
 			if(!isset($user->id)) {
 				$user = new TelegramUser(
-					['username' => $username, 'first_name' => $first_name, 'last_name' => $last_name]
+					['id' => $user_id, 'username' => $username, 'first_name' => $first_name, 'last_name' => $last_name]
 				);
 				$user->insert();
 			}

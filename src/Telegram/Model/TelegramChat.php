@@ -5,6 +5,7 @@ namespace CodebasehqTelegramBot\Telegram\Model;
 use \CodebasehqTelegramBot\Database\Model;
 use \CodebasehqTelegramBot\Database\Connection;
 use \CodebasehqTelegramBot\Telegram\Model\TelegramUser;
+use \CodebasehqTelegramBot\Telegram\TelegramChatHandler;
 	
 require_once 'vendor/autoload.php';
 	
@@ -31,6 +32,12 @@ class TelegramChat extends Model {
     
     public function getTelegramUser() {
 	    return TelegramUser::fetch(['id' => $this->telegram_user_id]);
+    }
+    
+    public function getChatHandler() {
+	    if(isset($this->id))
+	    	return new TelegramChatHandler($this->id, $this->username);
+	    return false;
     }
 	
 }

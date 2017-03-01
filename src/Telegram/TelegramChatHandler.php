@@ -4,7 +4,7 @@ namespace CodebasehqTelegramBot\Telegram;
 
 use \Longman\TelegramBot\Telegram;
 use \Longman\TelegramBot;
-use CodebasehqTelegramBot\Telegram\TelegramSubscriptionsHandler;
+use \CodebasehqTelegramBot\Telegram\TelegramSubscriptionsHandler;
 
 require_once 'config/telegram.php';
 require_once 'vendor/autoload.php';
@@ -32,13 +32,14 @@ class TelegramChatHandler {
 		
 		$this->input = json_decode($input);
 		$this->chat_id = $this->input->message->chat->id;
-		$this->username = $this->input->message->chat->username;
+		$this->username = $this->input->message->from->username;
 				
 		$registered = TelegramSubscriptionsHandler::registerUserIfNeeded(
 			$this->chat_id, 
+			$this->input->message->from->id,
 			$this->username, 
-			$this->input->message->chat->first_name,
-			$this->input->message->chat->last_name
+			$this->input->message->from->first_name,
+			$this->input->message->from->last_name
 		);
 		
 // 		if($registered)
