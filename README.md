@@ -69,3 +69,9 @@ CodebaseHQ search parameters: https://support.codebasehq.com/articles/tickets/qu
 
 # Vscale notifications
 Optionally, you can setup vscale account status notifications in `config/vscale.php` and call `hook_vscale.php` with CRON (see `config_sample/cron.txt`)
+
+# To-do
+
+- [x] Register CodebaseHQ account automatically with API-key
+- [ ] Add bot to groups
+- [ ] Configure which notifications user'd like to receive
