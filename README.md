@@ -3,6 +3,8 @@ Hackathonish version of the Telegram notifications bot for [CodebaseHQ](https://
 
 I'm in no way a PHP programmer, but this bot works quite well in [Telecan](http://telecan.ru) company. It also has no reason to be opensource, but why the hell not.
 
+![Screenshot](https://bot.nikans.com/telecan/trash/screen.png "CodebaseHQ Telegram bot")
+
 # Features
 
 This bot sends you notifications regarding your assigned projects. 
@@ -73,5 +75,6 @@ Optionally, you can setup vscale account status notifications in `config/vscale.
 # To-do
 
 - [x] Register CodebaseHQ account automatically with API-key
+- [ ] Installer
 - [ ] Add bot to groups
 - [ ] Configure which notifications user'd like to receive
