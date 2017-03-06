@@ -71,8 +71,9 @@ CodebaseHQ search parameters: https://support.codebasehq.com/articles/tickets/qu
 
 # Installation
 
+Fast & dirty
 - configure everything in `config/`
-- run `install.php` :)
+- open `https://{BOT_URL}/install.php` or just run `install.php`
 
 # Vscale notifications
 Optionally, you can setup vscale account status notifications in `config/vscale.php` and call `hook_vscale.php` with CRON (see `config_sample/cron.txt`)
@@ -82,4 +83,4 @@ Optionally, you can setup vscale account status notifications in `config/vscale.
 - [x] Register CodebaseHQ account automatically with API-key
 - [x] Installer
 - [ ] Add bot to groups
-- [ ] Configure which notifications user'd like to receive
+- [ ] Configure which notifications the user would like to receive
