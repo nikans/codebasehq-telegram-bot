@@ -3,7 +3,7 @@ Hackathonish version of the Telegram notifications bot for [CodebaseHQ](https://
 
 I'm in no way a PHP programmer, but this bot works quite well in [Telecan](http://telecan.ru) company. It also has no reason to be opensource, but why the hell not.
 
-![Screenshot](https://bot.nikans.com/telecan/trash/screen.png "CodebaseHQ Telegram bot")
+![Screenshot](https://bot.nikans.com/telecan/trash/screen1.png "CodebaseHQ Telegram bot")
 
 # Features
 
