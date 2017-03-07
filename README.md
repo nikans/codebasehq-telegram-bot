@@ -36,10 +36,10 @@ CodebaseHQ search parameters: https://support.codebasehq.com/articles/tickets/qu
 
 ## Some nice stuff
 
-- Bot highlights messages requiring your attention with ‼️
+- The bot highlights messages requiring your attention with ‼️
 - It gives you direct links to anything useful regarding the event
 - Messages contain #hashtags for easy navigation and grouping
-- You can forward a ticket you've just created to the assignee to get his attention (currently, you're notified of your own actions, too. You can switch it off... somewhere in the code)
+- You can forward a ticket you've just created to the assignee to get his attention (currently, you're notified of your own actions, too. You can switch it off... somewhere in the `TelegramSubscriptionsHandler`)
 
 # Setup
 
@@ -76,7 +76,7 @@ Fast & dirty
 - open `https://{BOT_URL}/install.php` or just run `install.php`
 
 # Vscale notifications
-Optionally, you can setup vscale account status notifications in `config/vscale.php` and call `hook_vscale.php` with CRON (see `config_sample/cron.txt`)
+Optionally, you can setup [Vscale](https://vscale.io) account status notifications in `config/vscale.php` and call `hook_vscale.php` with CRON (see `config_sample/cron.txt`)
 
 # To-do
 
